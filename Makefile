@@ -12,8 +12,8 @@ CYAN						:= \033[38;5;44m
 RST						:= \033[00m
 C_FILE_ICO					:= 
 H_FILE_ICO					:= 
-C_FILE_ICO_BLUE				:= \033[38;5;69m$(C_FILE_ICO)
-H_FILE_ICO_PURPLE			:= \033[38;5;98m$(H_FILE_ICO)
+C_FILE_ICO_BLUE				:= \033[38;5;69m$(C_FILE_ICO)$(RST)
+H_FILE_ICO_PURPLE			:= \033[38;5;98m$(H_FILE_ICO)$(RST)
 
 CHECK					:= [$(GREEN)\xE2\x9C\x94$(RST)]
 
@@ -26,6 +26,7 @@ INCLUDES_DIR = inc
 SRCS_DIR = src
 
 NF=$(shell ls -lR $(SRCS_DIR) | grep -F .c | wc -l)
+HNF=$(shell ls -lR $(INCLUDES_DIR) | grep -F .h | wc -l)
 P=0
 COUNTER=1
 MOD=1
@@ -94,7 +95,7 @@ $(PURPLE)
 	                                           ░                 
 
 
-			Version: $(PURPLE)$(VERSION)
+			$(GREEN)Version: $(PURPLE)$(VERSION)
 			$(GREEN)Author: $(PURPLE)$(AUTHOR)
 			$(GREEN)Github: $(PURPLE)$(GITHUB)
 			$(GREEN)CC Version: $(PURPLE)$(COMPILER_VERSION)$(RST)
@@ -108,7 +109,11 @@ export banner
 
 .SILENT:
 
-all: BANNER $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
+all: BANNER header $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
+
+header:
+	@echo -e "$(CHECK) Check header files is present in $(GREEN)$(INCLUDES_DIR)$(RST) !"
+	@echo -e "$(CHECK)	$(H_FILE_ICO_PURPLE) $(GREEN)$(HNF)$(RST) Headers founds in $(GREEN)$(INCLUDES_DIR)$(RST) !"
 
 .ONESHELL:
 BANNER:
