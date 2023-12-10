@@ -1,6 +1,7 @@
 AUTHOR = Unam3dd
 GITHUB = https://github.com/Unam3dd
 VERSION = 0.0.1
+DISTRO=$(shell cat /etc/os-release | grep "^ID" | head -n1 | cut -d '=' -f2)
 
 RED							:= \033[38;5;196m
 GREEN						:= \033[38;5;82m
@@ -18,7 +19,7 @@ H_FILE_ICO_PURPLE			:= \033[38;5;98m$(H_FILE_ICO)$(RST)
 CHECK					:= [$(GREEN)\xE2\x9C\x94$(RST)]
 
 # Output when project is generated
-DIST = dist
+DIST = dist/$(DISTRO)
 OBJDIR = obj
 
 # Includes and src dir
@@ -37,8 +38,9 @@ NF_O=0
 
 # Name of the project
 
-NAME = $(DIST)/supermath.so
-STATIC_NAME = $(DIST)/supermath.a
+FILENAME = supermath
+NAME = $(DIST)/$(FILENAME).so
+STATIC_NAME = $(DIST)/$(FILENAME).a
 
 SRCS = $(shell ls $(SRCS_DIR)/*.c 2>/dev/null)
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o)) 
@@ -98,7 +100,8 @@ $(PURPLE)
 			$(GREEN)Version: $(PURPLE)$(VERSION)
 			$(GREEN)Author: $(PURPLE)$(AUTHOR)
 			$(GREEN)Github: $(PURPLE)$(GITHUB)
-			$(GREEN)CC Version: $(PURPLE)$(COMPILER_VERSION)$(RST)
+			$(GREEN)CC Version: $(PURPLE)$(COMPILER_VERSION)
+			$(GREEN)Your OS Name: $(PURPLE)$(DISTRO)$(RST)
 
 
 
@@ -109,7 +112,18 @@ export banner
 
 .SILENT:
 
-all: BANNER header $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
+all:  BANNER $(eval SHELL:=/bin/zsh)
+	@echo -e "\t\t\t\t$(GREEN)H $(PURPLE)E $(GREEN)L $(PURPLE)P  $(GREEN)M $(PURPLE)A $(GREEN)I $(PURPLE)N\t\n"
+	@echo -e "\t$(GREEN)┌─────────────────────────────┬─────────────────────────────────────────┐"
+	@echo -e "\t$(GREEN)│ $(PURPLE)COMMAND:$(GREEN)                    │ $(PURPLE)DESCRIPTION:$(GREEN)                            │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)build$(GREEN)     	              │ $(PURPLE)build the project$(GREEN)                       │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)clean$(GREEN)                       │ $(PURPLE)clean object files$(GREEN)                      │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)fclean$(GREEN)                      │ $(PURPLE)clean all$(GREEN)                               │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)help$(GREEN)                        │ $(PURPLE)show this main$(GREEN)                          │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)re$(GREEN)                          │ $(PURPLE)remake the project$(GREEN)                      │"
+	@echo -e "\t$(GREEN)└─────────────────────────────┴─────────────────────────────────────────┘$(RST)\n\n\n"
+
+build: BANNER header $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
 
 header:
 	@echo -e "$(CHECK) Check header files is present in $(GREEN)$(INCLUDES_DIR)$(RST) !"
@@ -170,7 +184,8 @@ fclean: clean
 	@rm -rf $(STATIC_NAME)
 	@rm -rf $(NAME)
 	@rm -rf $(DIST)
+	@rm -rf dist
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all build clean fclean re
