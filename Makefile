@@ -35,6 +35,7 @@ LOADING_ITER=0
 FILE_SIZE=0
 BIN_FILE_SIZE=0
 NF_O=0
+HASH=0
 
 # Name of the project
 
@@ -121,6 +122,7 @@ all:  BANNER $(eval SHELL:=/bin/zsh)
 	@echo -e "\t$(GREEN)│ $(PURPLE)fclean$(GREEN)                      │ $(PURPLE)clean all$(GREEN)                               │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)help$(GREEN)                        │ $(PURPLE)show this main$(GREEN)                          │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)re$(GREEN)                          │ $(PURPLE)remake the project$(GREEN)                      │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)hash$(GREEN)                        │ $(PURPLE)get hash of files$(GREEN)                       │"
 	@echo -e "\t$(GREEN)└─────────────────────────────┴─────────────────────────────────────────┘$(RST)\n\n\n"
 
 build: BANNER header $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
@@ -165,8 +167,8 @@ $(NAME): static $(OBJDIR) $(OBJS)
 	@mkdir -p $(DIST)
 	@$(CC) $(CFLAGS) $(OBJS) -shared -o $(NAME)
 	@echo -e "\n\n\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
-	@echo -e "$(CHECK) Shared library or executable generated at $(GREEN)$(NAME)$(RST) !"
-	@echo -e "$(CHECK) Static library or executable generated at $(GREEN)$(STATIC_NAME)$(RST) !\n\n"
+	@echo -e "$(CHECK) Shared library or executable generated at $(GREEN)$(NAME) $(RST) !"
+	@echo -e "$(CHECK) Static library or executable generated at $(GREEN)$(STATIC_NAME) $(RST) !\n\n"
 
 static: $(OBJDIR) $(OBJS)
 	@mkdir -p $(DIST)
@@ -186,6 +188,26 @@ fclean: clean
 	@rm -rf $(DIST)
 	@rm -rf dist
 
-re: fclean all
+re: fclean build
 
-.PHONY: all build clean fclean re
+hash: $(STATIC_NAME) $(NAME) BANNER
+
+	@echo -e "$(CHECK) Checksum Signature files:\n"
+
+	@$(eval HASH=$(shell md5sum $(NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (MD5) $(GREEN)$(NAME) = ($(HASH))$(RST) !"
+	@$(eval HASH=$(shell md5sum $(STATIC_NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (MD5) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
+	
+	@$(eval HASH=$(shell sha256sum $(NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (SHA256) $(GREEN)$(NAME) = ($(HASH))$(RST) !"
+	@$(eval HASH=$(shell sha256sum $(STATIC_NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (SHA256) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
+
+	@$(eval HASH=$(shell sha512sum $(NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (SHA512) $(GREEN)$(NAME) = ($(HASH))$(RST) !"
+	@$(eval HASH=$(shell sha512sum $(STATIC_NAME) | cut -d ' ' -f1))
+	@echo -e "$(CHECK) (SHA512) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
+
+
+.PHONY: all build clean fclean re hash

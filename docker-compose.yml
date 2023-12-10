@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  alpine_test_build_container:
+    container_name: alpine_test_build_container
+    build:
+      context: ./containers/alpine_3.19.0_amd64
+      dockerfile: Dockerfile
+    restart: no
+    entrypoint: ["make", "build", "hash"]
+    volumes:
+      - ./:/project/
+
+  debian_test_build_container:
+    container_name: debian_test_build_container
+    build:
+      context: ./containers/debian-stable-slim
+      dockerfile: Dockerfile
+    entrypoint: ["make", "build", "hash"]
+    restart: no
+    volumes:
+      - ./:/project/
