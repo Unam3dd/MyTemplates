@@ -223,7 +223,7 @@ hash: $(STATIC_NAME) $(NAME) BANNER build
 	@echo -e "$(CHECK) (SHA512) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
 
 %.test: %.c
-	$(CC) -Wall -Wextra -Werror -I./inc -L$(DIST) $< -o $@ -lcriterion
+	$(CC) -Wall -Wextra -Werror -I./inc -L$(DIST) $< -o $@
 	./$@
 
 test:
