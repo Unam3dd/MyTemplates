@@ -20,3 +20,23 @@ services:
     restart: no
     volumes:
       - ./:/project/
+
+  ubuntu_test_build_container:
+    container_name: ubuntu_test_build_container
+    build:
+      context: ./containers/ubuntu2204
+      dockerfile: Dockerfile
+    entrypoint: ["make", "build", "hash"]
+    restart: no
+    volumes:
+      - ./:/project/
+
+  ubuntu_test_unit_test_container:
+    container_name: ubuntu_test_unit
+    build:
+      context: ./containers/test
+      dockerfile: Dockerfile
+    entrypoint: ["make", "build", "test"]
+    restart: no
+    volumes:
+      - ./:/project/

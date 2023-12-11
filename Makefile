@@ -2,6 +2,7 @@ AUTHOR = Unam3dd
 GITHUB = https://github.com/Unam3dd
 VERSION = 0.0.1
 DISTRO=$(shell cat /etc/os-release | grep "^ID" | head -n1 | cut -d '=' -f2)
+PROJECT_NAME = supermath
 
 RED							:= \033[38;5;196m
 GREEN						:= \033[38;5;82m
@@ -26,6 +27,9 @@ OBJDIR = obj
 INCLUDES_DIR = inc
 SRCS_DIR = src
 
+TEST_INC_DIR = test
+TEST_SRCS_DIR = test
+
 NF=$(shell ls -lR $(SRCS_DIR) | grep -F .c | wc -l)
 HNF=$(shell ls -lR $(INCLUDES_DIR) | grep -F .h | wc -l)
 P=0
@@ -45,6 +49,8 @@ STATIC_NAME = $(DIST)/$(FILENAME).a
 
 SRCS = $(shell ls $(SRCS_DIR)/*.c 2>/dev/null)
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o)) 
+TEST_SRCS = $(shell ls $(TEST_SRCS_DIR)/*.c 2> /dev/null)
+TEST_OBJS = $(TEST_SRCS:.c=.test)
 
 vpath %.c $(SRCS_DIR)
 vpath %.h $(INCLUDES_DIR)
@@ -56,7 +62,7 @@ COMPILER_VERSION = $(shell $(CC) --version | head -n1)
 
 
 ifdef CLANG
-	CFLAGS = clang
+	CC = clang
 endif
 
 ifdef FAST
@@ -77,6 +83,10 @@ endif
 
 ifdef DEBUG
 	CFLAGS += -DDEBUG=1
+endif
+
+ifdef STRIP
+	CFLAGS += -s
 endif
 
 LOADING_BRAILLE_STRING="⠟,⣟,⣯,⣷,⣾,⣽,⣻,⢿"
@@ -123,6 +133,7 @@ all:  BANNER $(eval SHELL:=/bin/zsh)
 	@echo -e "\t$(GREEN)│ $(PURPLE)help$(GREEN)                        │ $(PURPLE)show this main$(GREEN)                          │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)re$(GREEN)                          │ $(PURPLE)remake the project$(GREEN)                      │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)hash$(GREEN)                        │ $(PURPLE)get hash of files$(GREEN)                       │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)test$(GREEN)                        │ $(PURPLE)test your project$(GREEN)                       │"
 	@echo -e "\t$(GREEN)└─────────────────────────────┴─────────────────────────────────────────┘$(RST)\n\n\n"
 
 build: BANNER header $(NAME) $(STATIC_NAME) $(eval SHELL:=/bin/zsh)
@@ -147,6 +158,8 @@ $(OBJDIR)/%.o: %.c
 	@$(eval MOD=$(shell echo $$(( ($(COUNTER) % 8) + 1))))
 	@$(eval LOADING_ITER=$(shell echo -ne $(LOADING_BRAILLE_STRING) | cut -d ',' -f$(MOD)))
 	@$(eval FILE_SIZE=$(shell stat --format="$(GREEN)%s$(RST) Bytes" $<))
+	@echo -ne '\e[1A\e[1K'
+	@echo -ne "\033[2K"
 	@echo -ne "[$(GREEN)$(LOADING_ITER)$(RST)]	FileType: $(C_FILE_ICO_BLUE)  $(GREEN)$<$(RST) ($(FILE_SIZE)) 	$(GREEN)$@$(RST)"
 	@echo -ne '\t['
 	@i=1
@@ -190,7 +203,7 @@ fclean: clean
 
 re: fclean build
 
-hash: $(STATIC_NAME) $(NAME) BANNER
+hash: $(STATIC_NAME) $(NAME) BANNER build
 
 	@echo -e "$(CHECK) Checksum Signature files:\n"
 
@@ -209,5 +222,19 @@ hash: $(STATIC_NAME) $(NAME) BANNER
 	@$(eval HASH=$(shell sha512sum $(STATIC_NAME) | cut -d ' ' -f1))
 	@echo -e "$(CHECK) (SHA512) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
 
+%.test: %.c
+	$(CC) -Wall -Wextra -Werror -I./inc -L$(DIST) $< -o $@ -lcriterion
+	./$@
 
-.PHONY: all build clean fclean re hash
+test:
+	@docker build -t test_$(PROJECT_NAME) containers/test/
+	@docker run --name test_$(PROJECT_NAME) --hostname test_$(PROJECT_NAME) -v ./:/project/ -t test_$(PROJECT_NAME)
+	@docker stop test_$(PROJECT_NAME)
+	@docker rm test_$(PROJECT_NAME)
+
+build_test: $(TEST_OBJS)
+
+test_clean:
+	@rm -rf $(TEST_OBJS)
+
+.PHONY: all build clean fclean re hash test

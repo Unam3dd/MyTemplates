@@ -1,0 +1,5 @@
+FROM ubuntu:22.04
+WORKDIR /project/
+RUN apt-get update && apt-get upgrade -y && apt-get install gcc make zsh bc libcriterion-dev -y && apt-get clean
+STOPSIGNAL SIGTERM
+ENTRYPOINT ["make", "re", "test_clean", "build_test", "test_clean"]
