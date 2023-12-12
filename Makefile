@@ -254,4 +254,7 @@ test_clean:
 	@rm -rf $(OBJS)
 	@rm -rf $(OBJDIR)
 
+test_image_clean:
+	@docker image rm test_$(PROJECT_NAME)
+
 .PHONY: all build clean fclean re hash test build_test test_clean
