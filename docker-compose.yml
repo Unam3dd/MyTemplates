@@ -36,7 +36,7 @@ services:
     build:
       context: ./containers/test
       dockerfile: Dockerfile
-    entrypoint: ["make", "build", "test"]
+    entrypoint: ["make", "test_clean", "build", "build_test", "test_clean"]
     restart: no
     volumes:
       - ./:/project/

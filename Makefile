@@ -2,7 +2,8 @@ AUTHOR = Unam3dd
 GITHUB = https://github.com/Unam3dd
 VERSION = 0.0.1
 DISTRO=$(shell cat /etc/os-release | grep "^ID" | head -n1 | cut -d '=' -f2)
-PROJECT_NAME = supermath
+PROJECT_NAME = libsupermath
+IS_LIBRARY=true
 
 RED							:= \033[38;5;196m
 GREEN						:= \033[38;5;82m
@@ -43,7 +44,7 @@ HASH=0
 
 # Name of the project
 
-FILENAME = supermath
+FILENAME = $(PROJECT_NAME)
 NAME = $(DIST)/$(FILENAME).so
 STATIC_NAME = $(DIST)/$(FILENAME).a
 
@@ -57,9 +58,12 @@ vpath %.h $(INCLUDES_DIR)
 
 # Compiler Options
 CC   = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinc -pedantic -fPIE -DVERSION=\"$(VERSION)\"
+CFLAGS = -Wall -Wextra -Werror -Iinc -pedantic -DVERSION=\"$(VERSION)\"
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
 
+ifeq ($(IS_LIBRARY), true)
+ CFLAGS += -fPIE
+endif
 
 ifdef CLANG
 	CC = clang
@@ -112,7 +116,8 @@ $(PURPLE)
 			$(GREEN)Author: $(PURPLE)$(AUTHOR)
 			$(GREEN)Github: $(PURPLE)$(GITHUB)
 			$(GREEN)CC Version: $(PURPLE)$(COMPILER_VERSION)
-			$(GREEN)Your OS Name: $(PURPLE)$(DISTRO)$(RST)
+			$(GREEN)Your OS Name: $(PURPLE)$(DISTRO)
+			$(GREEN)Flag Set: $(PURPLE)$(CFLAGS)$(RST)
 
 
 
@@ -178,14 +183,24 @@ $(OBJDIR)/%.o: %.c
 .ONESHELL:
 $(NAME): static $(OBJDIR) $(OBJS)
 	@mkdir -p $(DIST)
+
+ifeq ($(IS_LIBRARY), true)
 	@$(CC) $(CFLAGS) $(OBJS) -shared -o $(NAME)
+else
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+endif
+
 	@echo -e "\n\n\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
 	@echo -e "$(CHECK) Shared library or executable generated at $(GREEN)$(NAME) $(RST) !"
 	@echo -e "$(CHECK) Static library or executable generated at $(GREEN)$(STATIC_NAME) $(RST) !\n\n"
 
 static: $(OBJDIR) $(OBJS)
 	@mkdir -p $(DIST)
+ifeq ($(IS_LIBRARY), true)
 	@ar -rcs $(STATIC_NAME) $(OBJS)
+else
+	$(CC) $(CFLAGS) $(OBJS) -static -o $(NAME)
+endif
 
 clean:
 	@echo -e "$(CHECK) Clean object directory !"
@@ -223,7 +238,7 @@ hash: $(STATIC_NAME) $(NAME) BANNER build
 	@echo -e "$(CHECK) (SHA512) $(GREEN)$(STATIC_NAME) = ($(HASH))$(RST) !\n"
 
 %.test: %.c
-	$(CC) -Wall -Wextra -Werror -I./inc -L$(DIST) $< -o $@
+	$(CC) -Wall -Wextra -Werror $< -o $@ -I./inc -lcriterion $(STATIC_NAME)
 	./$@
 
 test:
@@ -236,5 +251,7 @@ build_test: $(TEST_OBJS)
 
 test_clean:
 	@rm -rf $(TEST_OBJS)
+	@rm -rf $(OBJS)
+	@rm -rf $(OBJDIR)
 
-.PHONY: all build clean fclean re hash test
+.PHONY: all build clean fclean re hash test build_test test_clean
