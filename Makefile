@@ -257,4 +257,8 @@ test_clean:
 test_image_clean:
 	@docker image rm test_$(PROJECT_NAME)
 
+build_all:
+	@docker compose up --build
+	@docker compose down --rmi all
+
 .PHONY: all build clean fclean re hash test build_test test_clean
