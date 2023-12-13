@@ -138,6 +138,7 @@ all:  BANNER $(eval SHELL:=/bin/zsh)
 	@echo -e "\t$(GREEN)│ $(PURPLE)help$(GREEN)                        │ $(PURPLE)show this main$(GREEN)                          │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)re$(GREEN)                          │ $(PURPLE)remake the project$(GREEN)                      │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)hash$(GREEN)                        │ $(PURPLE)get hash of files$(GREEN)                       │"
+	@echo -e "\t$(GREEN)│ $(PURPLE)build_all$(GREEN)                   │ $(PURPLE)cross build$(GREEN)                             │"
 	@echo -e "\t$(GREEN)│ $(PURPLE)test$(GREEN)                        │ $(PURPLE)test your project$(GREEN)                       │"
 	@echo -e "\t$(GREEN)└─────────────────────────────┴─────────────────────────────────────────┘$(RST)\n\n\n"
 
@@ -199,7 +200,7 @@ static: $(OBJDIR) $(OBJS)
 ifeq ($(IS_LIBRARY), true)
 	@ar -rcs $(STATIC_NAME) $(OBJS)
 else
-	$(CC) $(CFLAGS) $(OBJS) -static -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -static -o $(STATIC_NAME)
 endif
 
 clean:
