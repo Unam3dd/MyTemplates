@@ -72,6 +72,12 @@ vpath %.h $(INCS_DIR)
 endif
 
 ifeq ($(EXT_FILE_PROJECT), s)
+
+ifdef NASM
+	CC = nasm
+	CFLAGS = -felf64
+endif
+
 vpath %.s $(SRCS_DIR)
 vpath %.h $(INCS_DIR)
 endif
