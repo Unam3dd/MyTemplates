@@ -1,5 +1,4 @@
 LINE_SIZE=20
-LINE_LENGTH=
 
 # Top Bar, $1 = length of line
 
