@@ -1,10 +1,19 @@
 # Project Info
 #
-PROJECT_NAME = supermath
-IS_LIBRARY = true
-AUTHOR = Unam3dd
-GITHUB = https://github.com/Unam3dd
-VERSION = 0.0.1
+PROJECT_NAME =supermath
+IS_LIBRARY =true
+AUTHOR =Unam3dd
+GITHUB =https://github.com/Unam3dd
+VERSION =0.0.1
+DIST := dist/release/
+NAME := $(DIST)$(PROJECT_NAME).so
+STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+
+ifdef DEBUG
+DIST := dist/debug/
+NAME := $(DIST)$(PROJECT_NAME).so
+STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+endif
 
 # Shell Information
 

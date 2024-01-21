@@ -6,7 +6,7 @@ include ./config/project.mk
 
 ifeq ($(EXT_FILE_PROJECT), c)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION=\"$(VERSION)"
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
 endif
@@ -54,14 +54,20 @@ ifdef STRIP
 	CFLAGS += -s
 endif
 
+# Object Directory
+OBJDIR = obj
+
 # Source Files
 
 SRCS = $(shell ls $(SRCS_DIR)/*.$(EXT_FILE_PROJECT))
+SRC_CNT = $(shell ls -lR $(SRCS_DIR) | grep -F $(EXT_FILE_PROJECT) | wc -l)
+INC_CNT = $(shell ls -lR $(INCS_DIR) | grep -F .h | wc -l)
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.$(EXT_FILE_PROJECT)=.o))
 
 # Test Files
 
 TEST_SRCS = $(shell ls $(TEST_SRCS_DIR)/*.$(EXT_FILE_PROJECT) 2> /dev/null)
+TEST_SRCS_CNT = $(shell ls -lR $(TEST_SRCS_DIR)/*.$(EXT_FILE_PROJECT) | grep -F .c | wc -l)
 TEST_OBJS = $(TEST_SRCS:*.$(EXT_FILE_PROJECT)=.test)
 
 # VPath
