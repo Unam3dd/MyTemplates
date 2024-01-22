@@ -4,8 +4,25 @@ include config/icons.mk
 include config/bar.mk
 include config/checker.mk
 
+LOADING_BRAILLE_STRING="⠟,⣟,⣯,⣷,⣾,⣽,⣻,⢿"
+
 .SILENT:
 all: BANNER BANNER_MAIN
+
+build: $(OBJDIR) $(NAME)
+
+$(OBJDIR):
+	@mkdir -p $(sort $(addprefix $(OBJDIR)/, $(dir $(SRCS))))
+
+$(OBJDIR)/%.o: %.$(EXT_FILE_PROJECT)
+	echo $<
+	echo $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.ONESHELL:
+$(NAME): $(OBJDIR) $(OBJS)
+	mkdir -p $(DIST)
+	$(CC) $(CFLAGS) $(OBJS) -shared -o $(NAME)
 
 help: BANNER
 	$(call top_bar_center)
@@ -32,32 +49,32 @@ info: BANNER BANNER_MAIN
 
 .ONESHELL:
 BANNER:
+	clear
 	printf "$$banner"
 
 .ONESHELL:
 BANNER_MAIN:
 	$(call top_bar_center)
-	
-	$(call string_bar_center,   Project Name  │  $(GREEN)$(PROJECT_NAME)$(RST)			    )
-	$(call string_bar_center,   Version       │  $(GREEN)$(VERSION)$(RST)                                      )
-	$(call string_bar_center,   Author        │  $(GREEN)$(AUTHOR)$(RST)                                    )
-	$(call string_bar_center,   Github        │  $(GREEN)$(GITHUB)$(RST)                 )
-	$(call string_bar_center,   OS            │  $(GREEN)$(DISTRO)$(RST)                                )
-	$(call string_bar_center,   CC            │  $(GREEN)$(COMPILER_VERSION)$(RST)                  )
-	$(call string_bar_center,   Library       │  $(GREEN)$(IS_LIBRARY)$(RST)                                       )
-	$(call string_bar_center,   Language      │  $(GREEN)Writed in $(RST)$(PROJECT_SRC_ICO) $(PROJECT_INC_ICO)                             )
-	$(call string_bar_center,   Sources Dir   │  $(GREEN)$(SRCS_DIR)$(RST)  $(PROJECT_SRC_ICO)  ($(GREEN)$(SRC_CNT)$(RST))                               )
-	$(call string_bar_center,   Includes Dir  │  $(GREEN)$(INCS_DIR)$(RST)  $(PROJECT_INC_ICO) ($(GREEN)$(INC_CNT)$(RST))                                )
-	$(call string_bar_center,   Test Dir      │  $(GREEN)$(TEST_SRCS_DIR) $(TEST_ICO)  $(RST)($(GREEN)$(TEST_SRCS_CNT)$(RST))	                        )
+
+	$(call string_bar_center,   Project Name  │  $(PROJECT_NAME))
+	$(call string_bar_center,   Version       │  $(VERSION))
+	$(call string_bar_center,   Author        │  $(AUTHOR))
+	$(call string_bar_center,   Github        │  $(GITHUB))
+	$(call string_bar_center,   OS            │  $(DISTRO))
+	$(call string_bar_center,   CC            │  $(COMPILER_VERSION))
+	$(call string_bar_center,   Library       │  $(IS_LIBRARY))
+	$(call string_bar_center,   Sources Dir   │  $(SRCS_DIR) ($(SRC_CNT)))
+	$(call string_bar_center,   Includes Dir  │  $(INCS_DIR) ($(INC_CNT)))
+	$(call string_bar_center,   Test Dir      │  $(TEST_SRCS_DIR) ($(TEST_SRCS_CNT)))
 ifndef DEBUG
-	$(call string_bar_center,   Mode          │  $(YELLOW)Release$(RST)                                    )
-	$(call string_bar_center,   Output        │  $(GREEN)$(DIST)$(RST)                              )
-	$(call string_bar_center,   Shared File   │  $(GREEN)$(NAME)$(RST)                  )
-	$(call string_bar_center,   Static File   │  $(GREEN)$(STATIC_NAME)$(RST)                   )
+	$(call string_bar_center,   Mode          │  Release)
+	$(call string_bar_center,   Output        │  $(DIST))
+	$(call string_bar_center,   Shared File   │  $(NAME))
+	$(call string_bar_center,   Static File   │  $(STATIC_NAME))
 else
-	$(call string_bar_center,   Mode          │  $(YELLOW)Debug$(RST)                                      )
-	$(call string_bar_center,   Output        │  $(GREEN)$(DIST)$(RST)                                )
-	$(call string_bar_center,   Shared File   │  $(GREEN)$(NAME)$(RST)                    )
-	$(call string_bar_center,   Static File   │  $(GREEN)$(STATIC_NAME)$(RST)                     )
+	$(call string_bar_center,   Mode          │  Debug)
+	$(call string_bar_center,   Output        │  $(DIST))
+	$(call string_bar_center,   Shared File   │  $(NAME))
+	$(call string_bar_center,   Static File   │  $(STATIC_NAME))
 endif
 	$(call bot_bar_center)
