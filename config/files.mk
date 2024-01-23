@@ -6,7 +6,7 @@ include ./config/project.mk
 
 ifeq ($(EXT_FILE_PROJECT), c)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)" -D_FORTIFY_SOURCE=$(FORTIFY)
 STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
@@ -16,7 +16,7 @@ endif
 
 ifeq ($(EXT_FILE_PROJECT), s)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)" -D_FORTIFY_SOURCE=$(FORTIFY)
 STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)

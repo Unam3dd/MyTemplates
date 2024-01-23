@@ -93,12 +93,9 @@ help: BANNER
 	$(call bot_bar_center)
 
 info: BANNER BANNER_MAIN
-	$(call top_bar_center)
-	$(call string_bar_center,CFLAGS=)
-	$(call string_bar_center,$(CFLAGS))
-	$(call string_bar_center,$(STATIC_CFLAGS))
-	$(call string_bar_center,LDFLAGS=$(LDFLAGS)) 
-	$(call bot_bar_center)
+	echo -e "CFLAGS=$(CFLAGS)"
+	echo -e "STATIC_CFLAGS=$(STATIC_CFLAGS)"
+	echo -e "LDFLAGS=$(LDFLAGS)"
 
 .ONESHELL:
 BANNER:

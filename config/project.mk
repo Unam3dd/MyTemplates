@@ -3,9 +3,10 @@
 PROJECT_NAME =supermath
 
 IS_LIBRARY=false
-NO_PIE=true
-CANARY=false
+NO_PIE=false
+CANARY=true
 STDLIB=true
+FORTIFY=0
 
 AUTHOR=Unam3dd
 GITHUB=https://github.com/Unam3dd
