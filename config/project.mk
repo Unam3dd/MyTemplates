@@ -1,18 +1,34 @@
 # Project Info
 #
 PROJECT_NAME =supermath
-IS_LIBRARY =true
-AUTHOR =Unam3dd
-GITHUB =https://github.com/Unam3dd
-VERSION =0.0.1
-DIST := dist/release/
-NAME := $(DIST)$(PROJECT_NAME).so
-STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+
+IS_LIBRARY=false
+NO_PIE=true
+CANARY=false
+STDLIB=true
+
+AUTHOR=Unam3dd
+GITHUB=https://github.com/Unam3dd
+VERSION=0.0.1
+DIST_BASE=dist
+DIST:=$(DIST_BASE)/release/
+ifeq ($(IS_LIBRARY),true)
+NAME:=$(DIST)$(PROJECT_NAME).so
+STATIC_NAME:=$(DIST)$(PROJECT_NAME).a
+else
+NAME:=$(DIST)$(PROJECT_NAME).out
+STATIC_NAME:=$(DIST)$(PROJECT_NAME).static
+endif
 
 ifdef DEBUG
-DIST := dist/debug/
+DIST := $(DIST_BASE)/debug/
+ifeq ($(IS_LIBRARY),true)
 NAME := $(DIST)$(PROJECT_NAME).so
 STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+else
+NAME := $(DIST)$(PROJECT_NAME).out
+STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+endif
 endif
 
 # Shell Information
@@ -36,3 +52,16 @@ EXT_FILE_PROJECT = $(shell ls src | head -n1 | sed 's/^.*\.//')
 
 TEST_INCS_DIR = test
 TEST_SRCS_DIR = test
+
+# Progress Bar
+
+NF=$(shell ls -lR $(SRCS_DIR) | grep -F .$(EXT_FILE_PROJECT) | wc -l)
+HNF=$(shell ls -lR $(INCS_DIR) | grep -F .h | wc -l)
+P=0
+COUNTER=1
+MOD=1
+LOADING_ITER=0
+FILE_SIZE=0
+BIN_FILE_SIZE=0
+NF_O=0
+HASH=0

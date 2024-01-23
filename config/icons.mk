@@ -2,6 +2,8 @@
 include ./config/colors.mk
 include ./config/project.mk
 
+LOADING_BRAILLE_STRING="⠟,⣟,⣯,⣷,⣾,⣽,⣻,⢿"
+
 # C Programming Icons
 
 C_FILE_ICO					= 

@@ -7,6 +7,7 @@ include ./config/project.mk
 ifeq ($(EXT_FILE_PROJECT), c)
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
+STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
 endif
@@ -15,15 +16,44 @@ endif
 
 ifeq ($(EXT_FILE_PROJECT), s)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION=\"$(VERSION)"
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
+STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
 endif
 
-# Flags
-
-ifeq ($(IS_LIBRARY), true)
+ifeq ($(IS_LIBRARY),true)
+	CFLAGS += -fPIC
+else
+ifeq ($(NO_PIE),false)
 	CFLAGS += -fPIE
+else
+	CFLAGS += -no-pie
+endif
+endif
+
+ifeq ($(STDLIB),false)
+	CFLAGS += -nodefaultlibs -nostdlib
+	STATIC_CFLAGS += -nodefaultlibs -nostdlib
+endif
+
+ifeq ($(CANARY),true)
+	CFLAGS += -fstack-protector-all
+	STATIC_CFLAGS += -fstack-protector-all
+else
+	CFLAGS += -fno-stack-protector
+	STATIC_CFLAGS += -fno-stack-protector
+endif
+
+ifeq ($(NO_PIE),false)
+	STATIC_CFLAGS += -static-pie
+else
+	STATIC_CFLAGS += -static
+endif
+
+ifdef DEBUG
+	CFLAGS += -g3
+	STATIC_CFLAGS += -g3
 endif
 
 ifdef CLANG
@@ -32,26 +62,32 @@ endif
 
 ifdef FAST
 	CFLAGS += -Ofast
+	STATIC_CFLAGS += -Ofast
 endif
 
 ifdef O2
 	CFLAGS += -O2
+	STATIC_CFLAGS += -O2
 endif
 
 ifdef O3
 	CFLAGS += -O3
+	STATIC_CFLAGS += -O3
 endif
 
 ifdef OSIZE
 	CFLAGS += -Osize
+	STATIC_CFLAGS += -Osize
 endif
 
 ifdef DEBUG
 	CFLAGS += -DDEBUG=1
+	STATIC_CFLAGS += -DDEBUG=1
 endif
 
 ifdef STRIP
 	CFLAGS += -s
+	STATIC_CFLAGS += -s
 endif
 
 # Object Directory
@@ -60,8 +96,6 @@ OBJDIR = obj
 # Source Files
 
 SRCS = $(shell ls $(SRCS_DIR)/*.$(EXT_FILE_PROJECT))
-SRC_CNT = $(shell ls -lR $(SRCS_DIR) | grep -F $(EXT_FILE_PROJECT) | wc -l)
-INC_CNT = $(shell ls -lR $(INCS_DIR) | grep -F .h | wc -l)
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.$(EXT_FILE_PROJECT)=.o))
 
 # Test Files
