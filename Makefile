@@ -14,19 +14,21 @@ $(OBJDIR):
 
 $(OBJDIR)/%.o: %.$(EXT_FILE_PROJECT)
 	@$(CC) $(CFLAGS) -c $< -o $@
+
 	@$(eval P=$(shell echo "$(COUNTER)/$(NF)*100" | bc -l | tr '.' '\n' | head -n1))
 	@$(eval COUNTER=$(shell echo -e "$(COUNTER)+1" | bc -l))
 	@$(eval MOD=$(shell echo $$(( ($(COUNTER) % 8) + 1))))
 	@$(eval LOADING_ITER=$(shell echo -ne $(LOADING_BRAILLE_STRING) | cut -d ',' -f$(MOD)))
 	@$(eval FILE_SIZE=$(shell stat --format="$(GREEN)%s$(RST) Bytes" $<))
+	
 	@echo -ne '\e[1A\e[1K'
 	@echo -ne "\033[2K"
-	@echo -ne "[$(GREEN)$(LOADING_ITER)$(RST)]	FileType: $(C_FILE_ICO_BLUE)  $(GREEN)$<$(RST) ($(FILE_SIZE)) 	$(GREEN)$@$(RST)"
+	@echo -ne "[$(GREEN)$(LOADING_ITER)$(RST)]	File: $(PROJECT_SRC_ICO)  $(GREEN)$<$(RST) ($(FILE_SIZE)) 	$(GREEN)$@$(RST)"
 	@echo -ne '\t['
 	@i=1
 	@while [ "$$i" -le $(COUNTER) ]
 	@do
-	@echo -ne '$(GREEN)█'
+	@echo -ne '$(PURPLE)█'
 	@((i++))
 	@done
 	@while [ "$$i" -le $(NF) ]
@@ -34,7 +36,7 @@ $(OBJDIR)/%.o: %.$(EXT_FILE_PROJECT)
 	@echo -ne '▒'
 	@((i++))
 	@done
-	@echo -e "$(RST)]\t\t $(PURPLE)$(P)$(RST)%	"
+	@echo -e "$(RST)]\t\t $(GREEN)$(P)%$(RST)	"
 
 .ONESHELL:
 $(NAME): $(OBJDIR) $(OBJS)
@@ -44,7 +46,7 @@ ifeq ($(IS_LIBRARY),true)
 else
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(NAME)
 endif
-	@echo -e "\n\n\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
+	@echo -e "\n\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
 	@echo -e "$(CHECK) Shared library or executable generated at $(GREEN)$(NAME) $(RST) !"
 
 .ONESHELL:
@@ -55,7 +57,7 @@ ifeq ($(IS_LIBRARY),true)
 else
 	$(CC) $(STATIC_CFLAGS) $(LDFLAGS) $(OBJS) -o $(STATIC_NAME)
 endif
-	@echo -e "\n\n\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
+	@echo -e "\n$(CHECK) Project has been compiled and generated $(GREEN)successfully$(RST) !"
 	@echo -e "$(CHECK) Static library or static executable generated at $(GREEN)$(STATIC_NAME) $(RST) !"
 
 .ONESHELL:
@@ -75,6 +77,15 @@ fclean: clean
 	rm -rf $(DIST_BASE)
 
 re: fclean build
+
+%.test: %.c
+	$(CC) $(CFLAGS) $< -o $@ -I./inc -lcriterion $(STATIC_NAME)
+	echo -e "$< -o $@"
+
+build_test: $(TEST_OBJS)
+
+clean_test:
+	rm -rf $(TEST_OBJS)
 
 help: BANNER
 	$(call top_bar_center)
@@ -129,3 +140,5 @@ else
 endif
 	$(call bot_bar_center)
 	echo -e "\n"
+
+.PHONY: build clean fclean re $(NAME) $(STATIC_NAME)

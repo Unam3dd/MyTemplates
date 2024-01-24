@@ -6,7 +6,7 @@ include ./config/project.mk
 
 ifeq ($(EXT_FILE_PROJECT), c)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)" -D_FORTIFY_SOURCE=$(FORTIFY)
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
@@ -16,10 +16,25 @@ endif
 
 ifeq ($(EXT_FILE_PROJECT), s)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)" -D_FORTIFY_SOURCE=$(FORTIFY)
+CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 STATIC_CFLAGS = -Wall -Wextra -Werror -I$(INCS_DIR) -pedantic -DVERSION="$(VERSION)"
 LDFLAGS =
 COMPILER_VERSION = $(shell $(CC) --version | head -n1)
+endif
+
+ifeq ($(FORTIFY),1)
+	CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY) -O$(FORTIFY)
+	STATIC_CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY) -O$(FORTIFY)
+endif
+
+ifeq ($(FORTIFY),2)
+	CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY) -O$(FORTIFY)
+	STATIC_CFLAGS += -D_FORTIFY_SOURCE=$(FORTIFY) -O$(FORTIFY)
+endif
+
+ifeq ($(EXECSTACK),1)
+	CFLAGS += -z execstack -fno-stack-protector
+	STATIC_CFLAGS += -z execstack -fno-stack-protector
 endif
 
 ifeq ($(IS_LIBRARY),true)
@@ -40,9 +55,6 @@ endif
 ifeq ($(CANARY),true)
 	CFLAGS += -fstack-protector-all
 	STATIC_CFLAGS += -fstack-protector-all
-else
-	CFLAGS += -fno-stack-protector
-	STATIC_CFLAGS += -fno-stack-protector
 endif
 
 ifeq ($(NO_PIE),false)
@@ -101,8 +113,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.$(EXT_FILE_PROJECT)=.o))
 # Test Files
 
 TEST_SRCS = $(shell ls $(TEST_SRCS_DIR)/*.$(EXT_FILE_PROJECT) 2> /dev/null)
-TEST_SRCS_CNT = $(shell ls -lR $(TEST_SRCS_DIR)/*.$(EXT_FILE_PROJECT) | grep -F .c | wc -l)
-TEST_OBJS = $(TEST_SRCS:*.$(EXT_FILE_PROJECT)=.test)
+TEST_OBJS = $(TEST_SRCS:.$(EXT_FILE_PROJECT)=.test)
 
 # VPath
 

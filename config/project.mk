@@ -2,35 +2,17 @@
 #
 PROJECT_NAME =supermath
 
-IS_LIBRARY=false
+IS_LIBRARY=true
 NO_PIE=false
 CANARY=true
 STDLIB=true
 FORTIFY=0
+EXECSTACK=0
 
 AUTHOR=Unam3dd
 GITHUB=https://github.com/Unam3dd
 VERSION=0.0.1
-DIST_BASE=dist
-DIST:=$(DIST_BASE)/release/
-ifeq ($(IS_LIBRARY),true)
-NAME:=$(DIST)$(PROJECT_NAME).so
-STATIC_NAME:=$(DIST)$(PROJECT_NAME).a
-else
-NAME:=$(DIST)$(PROJECT_NAME).out
-STATIC_NAME:=$(DIST)$(PROJECT_NAME).static
-endif
 
-ifdef DEBUG
-DIST := $(DIST_BASE)/debug/
-ifeq ($(IS_LIBRARY),true)
-NAME := $(DIST)$(PROJECT_NAME).so
-STATIC_NAME := $(DIST)$(PROJECT_NAME).a
-else
-NAME := $(DIST)$(PROJECT_NAME).out
-STATIC_NAME := $(DIST)$(PROJECT_NAME).a
-endif
-endif
 
 # Shell Information
 
@@ -66,3 +48,24 @@ FILE_SIZE=0
 BIN_FILE_SIZE=0
 NF_O=0
 HASH=0
+
+DIST_BASE=dist/$(DISTRO)
+DIST:=$(DIST_BASE)/release/
+ifeq ($(IS_LIBRARY),true)
+NAME:=$(DIST)$(PROJECT_NAME).so
+STATIC_NAME:=$(DIST)$(PROJECT_NAME).a
+else
+NAME:=$(DIST)$(PROJECT_NAME).out
+STATIC_NAME:=$(DIST)$(PROJECT_NAME).static
+endif
+
+ifdef DEBUG
+DIST := $(DIST_BASE)/debug/
+ifeq ($(IS_LIBRARY),true)
+NAME := $(DIST)$(PROJECT_NAME).so
+STATIC_NAME := $(DIST)$(PROJECT_NAME).a
+else
+NAME := $(DIST)$(PROJECT_NAME).out
+STATIC_NAME := $(DIST)$(PROJECT_NAME).static
+endif
+endif
