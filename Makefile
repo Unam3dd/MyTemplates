@@ -75,14 +75,14 @@ fclean: clean
 	rm -rf $(STATIC_NAME)
 	echo -e "$(CHECK) $(DIST_BASE) was removed !"
 	rm -rf $(DIST_BASE)
+	rm -rf $(DIST_ROOT)
 
 re: fclean build
 
 %.test: %.c
 	$(CC) $(CFLAGS) $< -o $@ -I./inc -lcriterion $(STATIC_NAME)
-	echo -e "$< -o $@"
 
-build_test: $(TEST_OBJS)
+build_test: $(STATIC_NAME) $(TEST_OBJS)
 
 clean_test:
 	rm -rf $(TEST_OBJS)

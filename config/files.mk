@@ -113,6 +113,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.$(EXT_FILE_PROJECT)=.o))
 # Test Files
 
 TEST_SRCS = $(shell ls $(TEST_SRCS_DIR)/*.$(EXT_FILE_PROJECT) 2> /dev/null)
+TEST_SRCS_CNT = $(shell ls $(TEST_SRCS_DIR) | grep -F .c | wc -l)
 TEST_OBJS = $(TEST_SRCS:.$(EXT_FILE_PROJECT)=.test)
 
 # VPath
