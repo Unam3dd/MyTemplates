@@ -81,11 +81,16 @@ re: fclean build
 
 %.test: %.c
 	$(CC) $(CFLAGS) $< -o $@ -I./inc -lcriterion $(STATIC_NAME)
+	./$@ --verbose=1
 
-build_test: $(STATIC_NAME) $(TEST_OBJS)
+build_test: BANNER BANNER_MAIN $(STATIC_NAME) clean_test $(TEST_OBJS)
 
 clean_test:
 	rm -rf $(TEST_OBJS)
+
+dynamic: $(NAME)
+
+static: $(STATIC_NAME)
 
 help: BANNER
 	$(call top_bar_center)
@@ -94,13 +99,13 @@ help: BANNER
 	$(call string_bar_center,    help                  show this main)
 	$(call string_bar_center,    info                  show info)
 	$(call string_bar_center,    build                 build project)
+	$(call string_bar_center,    dynamic               build project in dynamic linked)
+	$(call string_bar_center,    static                build project in static linked)
 	$(call string_bar_center,    clean                 clean *.o)
 	$(call string_bar_center,    fclean                clean *.o + project)
 	$(call string_bar_center,    re                    rebuild the project)
 	$(call string_bar_center,    test                  build and run all test files)
-	$(call string_bar_center,    multibuild            build on multiple distrib)
 	$(call string_bar_center,    run                   run the project)
-	$(call string_bar_center,    cbuild                build with docker container)
 	$(call bot_bar_center)
 
 info: BANNER BANNER_MAIN
@@ -141,4 +146,4 @@ endif
 	$(call bot_bar_center)
 	echo -e "\n"
 
-.PHONY: build clean fclean re $(NAME) $(STATIC_NAME)
+.PHONY: build clean fclean re dynamic static build_test clean_test

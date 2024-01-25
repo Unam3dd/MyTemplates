@@ -1,5 +1,4 @@
 #include <criterion/criterion.h>
-#include <stdio.h>
 #include "../inc/project.h"
 
 Test(test1_suite, simple_add_test) {

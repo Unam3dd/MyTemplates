@@ -4,7 +4,7 @@ PROJECT_NAME =supermath
 
 IS_LIBRARY=true
 NO_PIE=false
-CANARY=true
+CANARY=false
 STDLIB=true
 FORTIFY=0
 EXECSTACK=0
