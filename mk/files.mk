@@ -1,4 +1,4 @@
-include ./config/project.mk
+include ./mk/project.mk
 
 # Compiler
 

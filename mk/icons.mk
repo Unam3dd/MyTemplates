@@ -1,6 +1,6 @@
 
-include ./config/colors.mk
-include ./config/project.mk
+include ./mk/colors.mk
+include ./mk/project.mk
 
 LOADING_BRAILLE_STRING="⠟,⣟,⣯,⣷,⣾,⣽,⣻,⢿"
 

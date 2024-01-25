@@ -1,7 +1,7 @@
-include ./config/colors.mk
-include ./config/project.mk
-include ./config/files.mk
-include ./config/bar.mk
+include ./mk/colors.mk
+include ./mk/project.mk
+include ./mk/files.mk
+include ./mk/bar.mk
 
 define banner
 $(PURPLE)

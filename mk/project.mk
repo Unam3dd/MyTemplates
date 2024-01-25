@@ -1,5 +1,5 @@
 # Project Info
-#
+
 PROJECT_NAME =supermath
 
 IS_LIBRARY=true

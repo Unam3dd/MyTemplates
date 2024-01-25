@@ -1,5 +1,5 @@
-include ./config/colors.mk
-include ./config/icons.mk
+include ./mk/colors.mk
+include ./mk/icons.mk
 
 define check_binary
 	$(if $(shell command -v $(1) 2>/dev/null),\
