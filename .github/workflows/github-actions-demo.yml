@@ -18,17 +18,17 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
-    test-zsh-install:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
+  test-zsh-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         
-        - name: Install zsh
-          run:  apt-get update && apt-get install zsh -y
+      - name: Install zsh
+        run:  apt-get update && apt-get install zsh -y
 
-        - name: ZshWhere
-          run: which zsh && echo "$SHELL"
-          shell: /bin/zsh{0}
+      - name: ZshWhere
+        run: which zsh && echo "$SHELL"
+        shell: /bin/zsh{0}
 
 
 
