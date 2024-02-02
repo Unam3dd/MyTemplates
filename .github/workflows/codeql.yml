@@ -45,16 +45,16 @@ jobs:
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
+        shell: /bin/zsh {0}
         with:
           languages: ${{ matrix.language }}
-        shell: /bin/zsh
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
-        shell: /bin/zsh
+        shell: /bin/zsh {0}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        shell: /bin/zsh {0}
         with:
           category: "/language:${{matrix.language}}"
-        shell: /bin/zsh
