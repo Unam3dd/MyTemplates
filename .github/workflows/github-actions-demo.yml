@@ -33,7 +33,7 @@ jobs:
       - name: ZshRun
         run: |
           make -C ${{ github.workspace }} build
-        shell: /usr/bin/zsh{0}
+        shell: /usr/bin/zsh {0}
 
 
 
