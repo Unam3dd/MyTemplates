@@ -21,7 +21,6 @@ on:
 
 jobs:
   analyze:
-
     strategy:
       fail-fast: false
       matrix:
