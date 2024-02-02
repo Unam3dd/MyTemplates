@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-int main(int ac, char **av)
+int main(void)
 {
-    printf("hello world");
     return (0);
 }
