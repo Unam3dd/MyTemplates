@@ -2,6 +2,7 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
+
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
@@ -14,6 +15,20 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
-          make -C ${{ github.workspace }} build
+          ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+    test_zsh_install:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        
+        - name: Install zsh
+          run:  apt-get update && apt-get install zsh -y
+
+        - name: ZshWhere
+          run: which zsh && echo "$SHELL"
+          shell: /bin/zsh{0}
+
+
 
