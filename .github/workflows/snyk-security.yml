@@ -43,8 +43,9 @@ jobs:
 
       - name: Authenticate to snyk API
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk auth $SNYK_TOKEN
+          SNYK_TOKEN: ${{ prod.SNYK_TOKEN }}
+        run: |
+          snyk auth "$SNYK_TOKEN"
 
       - name: Snyk Code test
         run: snyk code test --sarif > snyk-code.sarif
