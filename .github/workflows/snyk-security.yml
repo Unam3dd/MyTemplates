@@ -44,6 +44,8 @@ jobs:
       - name: Authenticate to snyk API
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk config set api=$SNYK_TOKEN
 
