@@ -27,7 +27,7 @@ jobs:
         run:  sudo apt-get update && sudo apt-get install zsh -y
 
       - name: ZshWhere
-        run: which zsh && echo "$SHELL"
+        run: which zsh && echo ${{ github.env.SHELL }}
         shell: /bin/zsh{0}
 
 
