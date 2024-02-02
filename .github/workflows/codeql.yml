@@ -21,10 +21,9 @@ on:
 
 jobs:
   analyze:
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'c-cpp' ]
+    fail-fast: false
+    matrix:
+      language: [ 'c-cpp' ]
 
     steps:
       - name: Installing zsh
