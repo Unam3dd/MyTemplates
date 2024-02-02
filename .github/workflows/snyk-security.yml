@@ -45,7 +45,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk config set api=$SNYK_TOKEN && snyk test
+          snyk config set api=$SNYK_TOKEN
 
       - name: Snyk Code test
         run: snyk code test --sarif > snyk-code.sarif
