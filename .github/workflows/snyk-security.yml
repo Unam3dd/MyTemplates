@@ -41,8 +41,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: Authenticate to snyk API
+        run: snyk auth ${{ github.env.SNYK_TOKEN }}
       - name: Snyk Code test
-        run: snyk code test
+        run: snyk code test --sarif > snyk-code.sarif
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
