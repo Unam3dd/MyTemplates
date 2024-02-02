@@ -48,7 +48,7 @@ jobs:
           snyk config set api=$SNYK_TOKEN && snyk auth $SNYK_TOKEN
 
       - name: Snyk Code test
-        run: snyk code test
+        run: snyk code test --sarif > snyk-code.sarif
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
