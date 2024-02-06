@@ -1,12 +1,12 @@
 # Project Info
 
-PROJECT_NAME =supermath
+PROJECT_NAME=supermath
 
 IS_LIBRARY=true
 NO_PIE=false
-CANARY=false
+CANARY=true
 STDLIB=true
-FORTIFY=0
+FORTIFY=2
 EXECSTACK=0
 
 AUTHOR=Unam3dd
