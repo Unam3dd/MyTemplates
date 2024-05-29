@@ -1,4 +1,5 @@
-test/*.test
+compile_commands.json
+build
 dist
 obj
 .env
