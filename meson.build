@@ -34,3 +34,8 @@ test('simple test 1', dynamic_linked, args: ['test'], verbose: false)
 test('simple test 2', dynamic_linked, args: ['okay'], verbose: false)
 test('simple test 3', dynamic_linked, args: ['name'], should_fail: true, verbose: false)
 test('simple test 2', dynamic_linked, args: ['sam'], verbose: false)
+
+test('simple test 1', static_linked, args: ['test'], verbose: false)
+test('simple test 2', static_linked, args: ['okay'], verbose: false)
+test('simple test 3', static_linked, args: ['name'], should_fail: true, verbose: false)
+test('simple test 2', static_linked, args: ['sam'], verbose: false)
