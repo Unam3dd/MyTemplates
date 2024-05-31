@@ -10,8 +10,6 @@ permissions:
 jobs:
   build:
     runs-on: [windows-latest]
-    compiler: mingw
-    gcc: 12
     steps:
       - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
         uses: actions/checkout@v4
