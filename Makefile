@@ -1,12 +1,12 @@
 BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
-TEST = $(MESON) test -C $(BUILD_DIR)
-ifdef ($(OS), linux)
-	PREFIX = $(PWD)
-else
+ifeq ($(OS),Windows_NT)
 	PREFIX = $(shell %CD%)
+else
+	PREFIX = $(PWD)
 endif
+TEST = $(MESON) test -C $(BUILD_DIR)
 BUILD = $(MESON) setup $(BUILD_DIR) --prefix=$(PREFIX)
 NINJA = ninja -C $(BUILD_DIR) install
 ECHO = echo -e
