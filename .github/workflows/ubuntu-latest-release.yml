@@ -9,10 +9,10 @@ permissions:
 
 
 jobs:
-  strategy:
-    matrix:
-      compiler: [gcc, clang]
   build:
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
