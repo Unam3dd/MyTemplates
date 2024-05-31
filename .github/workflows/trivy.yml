@@ -1,0 +1,30 @@
+name: Trivy Security Scanner
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scanner:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      
+      - name: Checkout repository ${{ github.repository }}
+        uses: actions/checkout@v4
+
+      - name: Starting Trivy scanner...
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
+          exit-code: 1
+
