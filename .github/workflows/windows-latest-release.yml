@@ -1,4 +1,4 @@
-name: Windows-Latest - Mingw (Windows)
+name: Windows-Latest - (Windows)
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
 
       - name: 🔄 Installing Dependencies ...
         run: |
-          choco install ninja make mingw -y
+          choco install ninja make -y
 
       - name: Building the project... (Release)
         run: |
