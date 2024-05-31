@@ -10,7 +10,5 @@ int main(int ac, char **av)
     
     say_hello(av[1]);
 
-    puts("this is exemple of debugging PLT & GOT");
-
     return (0);
 }

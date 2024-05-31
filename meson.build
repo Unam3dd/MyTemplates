@@ -2,11 +2,46 @@ project('hello-world', 'c',
   version : '0.1',
   default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'buildtype=release'])
 
+######################################
+#
+#     COMPILER & LINKER
+#
+######################################
+
+cc = meson.get_compiler('c')
+linker = cc.get_linker_id()
+
+if (host_machine.system() == 'linux')
+  ld = find_program('ld', required: false)
+endif
+
+FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2', '-znoexecstack']
+
+######################################
+#
+#             INCLUDES
+#
+######################################
+
 INC = include_directories('inc')
+
+######################################
+#
+#             SOURCES
+#
+######################################
+
 SRCS = files('src/hello-world.c', 'src/main.c')
+
+
+######################################
+#
+#             OUTPUT
+#
+######################################
+
 DIST_BASE = 'bin/'
 DIST = DIST_BASE + 'release'
-FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2', '-znoexecstack']
 
 if get_option('buildtype') == 'debug'
   DIST = DIST_BASE + 'debug'
@@ -29,6 +64,12 @@ static_linked = executable('hello-world-static',
         install_dir: DIST + '/static/',
         install: true,
         pie: true)
+
+######################################
+#
+#             TESTS
+#
+######################################
 
 test('simple test 1', dynamic_linked, args: ['test'], verbose: false)
 test('simple test 2', dynamic_linked, args: ['okay'], verbose: false)

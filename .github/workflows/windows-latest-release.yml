@@ -1,0 +1,37 @@
+name: Windows-Latest - Mingw (Windows)
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: [windows-latest]
+    compiler: mingw
+    gcc: 12
+    steps:
+      - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
+        uses: actions/checkout@v4
+
+      - run: "echo ${{ github.repository }} has been cloned in the container !"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 🔄 Installing Meson package build system...
+        run: pip install meson
+
+      - name: 🔄 Installing Dependencies ...
+        run: |
+          choco install ninja make mingw -y
+
+      - name: Building the project... (Release)
+        run: |
+          echo "🏗️ Setting up Meson build system..."
+          make release
+          echo "🎉 Build completed with Meson!"
+
