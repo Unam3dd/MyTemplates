@@ -2,7 +2,7 @@ BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
 ifeq ($(OS),Windows_NT)
-	PREFIX = $(shell echo %cd%)
+	PREFIX = $(shell "$P=Get-Location;$P.Path")
 else
 	PREFIX = $(PWD)
 endif
