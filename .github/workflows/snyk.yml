@@ -8,7 +8,7 @@ on:
 
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   snyk:
