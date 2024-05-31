@@ -15,7 +15,7 @@ if (host_machine.system() == 'linux')
   ld = find_program('ld', required: false)
 endif
 
-FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2', '-znoexecstack']
+FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2']
 
 ######################################
 #
