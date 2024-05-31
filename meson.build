@@ -76,6 +76,7 @@ summary({
   'Root': meson.source_root(),
   'Cross Platform': meson.is_cross_build(),
   'Prefix': get_option('prefix'),
+  'BuildType': get_option('buildtype'),
   'Libdir': get_option('libdir'),
   'Datadir': get_option('datadir'),
   }, section: 'Project Overview')
