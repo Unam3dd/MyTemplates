@@ -2,7 +2,7 @@ BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
 TEST = $(MESON) test -C $(BUILD_DIR)
-ifdef $(PWD)
+ifdef ($(OS), linux)
 	PREFIX = $(PWD)
 else
 	PREFIX = $(shell %CD%)
