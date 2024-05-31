@@ -3,31 +3,33 @@ DIST_DIR = bin
 MESON = meson
 TEST = $(MESON) test -C $(BUILD_DIR)
 BUILD = $(MESON) setup $(BUILD_DIR) --prefix=$(PWD)
-NINJA = ninja -C $(BUILD_DIR) install
+NINJA = ninja -C $(BUILD_DIR)
 
-all: $(BUILD_DIR)
+all: $(DIST_DIR)
 
-$(BUILD_DIR):
+$(DIST_DIR):
 	@$(BUILD)
-	@$(NINJA)
+	@$(NINJA) install
 
-release: $(BUILD_DIR)
+build: $(DIST_DIR)
+
+release: $(DIST_DIR)
 
 plain:
 	@$(BUILD) --reconfigure --buildtype=plain
-	@$(NINJA)
+	@$(NINJA) install
 
 minsize:
 	@$(BUILD) --reconfigure --buildtype=minsize
-	@$(NINJA)
+	@$(NINJA) install
 
 debug:
 	@$(BUILD) --reconfigure --buildtype=debug
-	@$(NINJA)
+	@$(NINJA) install
 
 debugoptimized:
 	@$(BUILD) --reconfigure --buildtype=debugoptimized
-	@$(NINJA)
+	@$(NINJA) install
 
 clean:
 	@rm -rf $(BUILD_DIR)
@@ -37,9 +39,13 @@ fclean: clean
 
 re: fclean
 	@$(BUILD) --reconfigure
-	@$(NINJA)
+	@$(NINJA) install
 
-test: $(BUILD_DIR)
+tests: $(BUILD_DIR)
 	@$(TEST)
 
-.PHONY: all release plain minsize debug debugoptimized clean fclean re test
+build-tests:
+	@$(BUILD) --reconfigure -Dbuild-tests=true
+	@$(NINJA)
+
+.PHONY: all release plain minsize debug debugoptimized clean fclean re tests build-tests

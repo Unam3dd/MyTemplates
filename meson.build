@@ -31,7 +31,17 @@ INC = include_directories('inc')
 #
 ######################################
 
-SRCS = files('src/hello-world.c', 'src/main.c')
+FILES = files('src/mylib.c', 'src/hello-world.c')
+MAIN =  files('src/main.c')
+SRCS = FILES + MAIN
+
+######################################
+#
+#             UNIT TESTS
+#
+######################################
+
+TESTS = files('tests/mylib.c')
 
 ######################################
 #
@@ -81,6 +91,13 @@ summary({
   'Datadir': get_option('datadir'),
   }, section: 'Project Overview')
 
+######################################
+#
+#             DEPENDENCIES
+#
+######################################
+
+criterion = dependency('criterion', required: false)
 
 ######################################
 #
@@ -111,6 +128,19 @@ static_linked = executable('hello-world-static',
 #             TESTS
 #
 ######################################
+
+if get_option('build-tests') and host_machine.system() == 'linux'
+  foreach f: TESTS
+    test_name = 'test_' + f.full_path().split('/')[-1].split('.c')[0]
+    test_exec = executable(test_name,
+      [f, FILES], c_args: ['-g3', '-Oz', '-fPIC'],
+      dependencies: [criterion],
+      include_directories: INC,
+      install: false,
+      pie: true)
+    test(test_name, test_exec, args: ['--verbose'], verbose: false)
+  endforeach
+endif
 
 test('simple test 1', dynamic_linked, args: ['test'], verbose: false)
 test('simple test 2', dynamic_linked, args: ['okay'], verbose: false)
