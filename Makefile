@@ -2,7 +2,7 @@ BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
 ifeq ($(OS),Windows_NT)
-	PREFIX = $(shell cd)
+	PREFIX = $(shell echo %cd%)
 else
 	PREFIX = $(PWD)
 endif
