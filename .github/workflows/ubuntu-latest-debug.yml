@@ -1,4 +1,4 @@
-name: Windows-Latest - (Windows)
+name: Ubuntu-Latest Debug - GCC (Linux)
 
 on:
   push:
@@ -7,9 +7,13 @@ on:
 permissions:
   contents: read
 
+strategy:
+  matrix:
+    compiler: [gcc, clang]
+
 jobs:
   build:
-    runs-on: [windows-latest]
+    runs-on: [ubuntu-latest]
     steps:
       - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
         uses: actions/checkout@v4
@@ -23,13 +27,16 @@ jobs:
       - name: 🔄 Installing Meson package build system...
         run: pip install meson
 
-      - name: 🔄 Installing Dependencies ...
+      - name: 🔄 Installing Ninja-build package...
         run: |
-          choco install ninja make -y
+          sudo apt-get update
+          sudo apt-get install ninja-build -y
 
-      - name: Building the project... (Release)
+      - name: Building the project... (Debug)
+        env:
+          CC: ${{ matrix.compiler }}
         run: |
           echo "🏗️ Setting up Meson build system..."
-          make release
+          make debug
           echo "🎉 Build completed with Meson!"
 

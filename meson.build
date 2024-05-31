@@ -33,7 +33,6 @@ INC = include_directories('inc')
 
 SRCS = files('src/hello-world.c', 'src/main.c')
 
-
 ######################################
 #
 #             OUTPUT
@@ -46,6 +45,47 @@ DIST = DIST_BASE + 'release'
 if get_option('buildtype') == 'debug'
   DIST = DIST_BASE + 'debug'
 endif
+
+######################################
+#
+#             Summary
+#
+######################################
+
+summary({
+  'CPU': build_machine.cpu(),
+  'Endian': build_machine.endian(),
+  'System': build_machine.system()
+  }, section: 'Machine Information')
+
+if (host_machine.system() == 'linux')
+summary({
+  'C Compiler': cc.get_id() + ' ' + cc.version(),
+  'Dynamic linker path': ld,
+  'Dynamic linker': ld.version(),
+  }, section: 'Compiler and Linker Information')
+else
+summary({
+  'C Compiler': cc.get_id() + ' ' + cc.version(),
+  }, section: 'Compiler Information')
+endif
+
+summary({
+  'Name': meson.project_name(),
+  'Version': meson.project_version(),
+  'Root': meson.source_root(),
+  'Cross Platform': meson.is_cross_build(),
+  'Prefix': get_option('prefix'),
+  'Libdir': get_option('libdir'),
+  'Datadir': get_option('datadir'),
+  }, section: 'Project Overview')
+
+
+######################################
+#
+#           Executable
+#
+######################################
 
 dynamic_linked = executable('hello-world',
            SRCS,

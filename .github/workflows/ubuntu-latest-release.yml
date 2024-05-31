@@ -1,4 +1,4 @@
-name: Ubuntu-Latest - GCC (Linux)
+name: Ubuntu-Latest Release - GCC (Linux)
 
 on:
   push:
@@ -7,9 +7,12 @@ on:
 permissions:
   contents: read
 
+strategy:
+  matrix:
+    compiler: [gcc, clang]
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
         uses: actions/checkout@v4
@@ -29,6 +32,8 @@ jobs:
           sudo apt-get install ninja-build -y
 
       - name: Building the project... (Release)
+        env:
+          CC: ${{ matrix.compiler }}
         run: |
           echo "🏗️ Setting up Meson build system..."
           make release

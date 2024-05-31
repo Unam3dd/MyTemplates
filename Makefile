@@ -1,13 +1,8 @@
 BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
-ifeq ($(OS),Windows_NT)
-	PREFIX = $(shell "$P=Get-Location;$P.Path")
-else
-	PREFIX = $(PWD)
-endif
 TEST = $(MESON) test -C $(BUILD_DIR)
-BUILD = $(MESON) setup $(BUILD_DIR) --prefix=$(PREFIX)
+BUILD = $(MESON) setup $(BUILD_DIR) --prefix=$(PWD)
 NINJA = ninja -C $(BUILD_DIR) install
 
 all: $(BUILD_DIR)
