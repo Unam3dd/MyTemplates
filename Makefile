@@ -44,8 +44,11 @@ re: fclean
 tests: $(BUILD_DIR)
 	@$(TEST)
 
+vg-tests: $(BUILD_DIR)
+	@$(TEST) --verbose --wrapper=valgrind
+
 build-tests:
 	@$(BUILD) --reconfigure -Dbuild-tests=true
 	@$(NINJA)
 
-.PHONY: all release plain minsize debug debugoptimized clean fclean re tests build-tests
+.PHONY: all release plain minsize debug debugoptimized clean fclean re tests build build-tests vg-tests

@@ -9,6 +9,5 @@ int main(int ac, char **av)
     if (!strcmp("name", av[1])) return (1);
     
     say_hello(av[1]);
-
     return (0);
 }
