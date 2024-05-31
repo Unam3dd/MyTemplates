@@ -7,11 +7,11 @@ on:
 permissions:
   contents: read
 
-strategy:
-  matrix:
-    compiler: [gcc, clang]
 
 jobs:
+  strategy:
+    matrix:
+      compiler: [gcc, clang]
   build:
     runs-on: [ubuntu-latest]
     steps:
