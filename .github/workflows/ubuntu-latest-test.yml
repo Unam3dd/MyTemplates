@@ -30,7 +30,7 @@ jobs:
       - name: 🔄 Installing Ninja-build package...
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build libcriterion -y
+          sudo apt-get install ninja-build libcriterion-dev -y
 
       - name: Building the project...
         env:
