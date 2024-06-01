@@ -67,7 +67,11 @@ ifeq ($(OS), Windows_NT)
 	@$(NINJA) install
 else
 	@$(BUILD) --reconfigure -Dbuild-tests=true --prefix=/usr/
+ifdef INSTALL
 	@$(NINJA) install
+else
+	@$(NINJA)
+endif
 endif
 
 .PHONY: all release plain minsize debug debugoptimized clean fclean re tests build build-tests vg-tests

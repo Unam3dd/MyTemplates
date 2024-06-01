@@ -15,7 +15,7 @@ if (host_machine.system() == 'linux')
   ld = find_program('ld', required: false)
 endif
 
-if (cc.get_id() == 'linux' or cc.get_id() == 'gcc')
+if host_machine.system() == 'linux'
   FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2']
 elif (host_machine.system() == 'windows' and cc.get_id() == 'clang-cl' or cc.get_id() == 'cl')
   FLAGS = []
@@ -113,7 +113,7 @@ endif
 #
 ######################################
 
-if (host_machine.system() == 'linux')
+if (host_machine.system() == 'linux' and get_option('build-tests') == false)
 
 dynamic_linked = executable('hello-world',
            SRCS,
@@ -126,8 +126,8 @@ dynamic_linked = executable('hello-world',
 
 static_linked = executable('hello-world-static',
         SRCS,
-        c_args: FLAGS + '-static-pie',
-        link_args: FLAGS + '-static-pie',
+        c_args: FLAGS + '-static',
+        link_args: FLAGS + '-static',
         include_directories: INC,
         install_dir: DIST + '/static/',
         install: true,
@@ -149,6 +149,23 @@ endif
 ######################################
 
 if get_option('build-tests') and host_machine.system() == 'linux'
+  
+  dynamic_linked = executable('test_hello-world',
+    SRCS,
+    c_args: FLAGS,
+    link_args: FLAGS,
+    include_directories: INC,
+    install: false,
+    pie: true)
+
+  static_linked = executable('test_hello-world-static',
+    SRCS,
+    c_args: FLAGS + '-static-pie',
+    link_args: FLAGS + '-static-pie',
+    include_directories: INC,
+    install: false,
+    pie: true)
+  
   DBG_FLAGS = ['-g3', '-Oz' ,'-fPIC']
   foreach f: TESTS
     test_name = 'test_' + f.full_path().split('/')[-1].split('.c')[0]
