@@ -13,9 +13,12 @@ linker = cc.get_linker_id()
 
 if (host_machine.system() == 'linux')
   ld = find_program('ld', required: false)
+elif (cc.get_id() == 'gcc')
+  FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2']
+elif (host_machine.system() == 'windows' and cc.get_id() == 'clang-cl' or cc.get_id() == 'cl')
+  FLAGS = []
 endif
 
-FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2']
 
 ######################################
 #
@@ -97,13 +100,17 @@ summary({
 #
 ######################################
 
-criterion = dependency('criterion', required: false)
+if host_machine.system() == 'linux'
+  criterion = dependency('criterion', required: true)
+endif
 
 ######################################
 #
 #           Executable
 #
 ######################################
+
+if (host_machine.system() == 'linux')
 
 dynamic_linked = executable('hello-world',
            SRCS,
@@ -116,12 +123,21 @@ dynamic_linked = executable('hello-world',
 
 static_linked = executable('hello-world-static',
         SRCS,
-        c_args: FLAGS,
+        c_args: FLAGS + '-static-pie',
         link_args: FLAGS,
         include_directories: INC,
         install_dir: DIST + '/static/',
         install: true,
         pie: true)
+else
+  static_linked = executable('hello-world',
+        SRCS,
+        c_args: FLAGS,
+        link_args: FLAGS,
+        include_directories: INC,
+        install_dir: DIST,
+        install: true) 
+endif
 
 ######################################
 #
@@ -130,22 +146,24 @@ static_linked = executable('hello-world-static',
 ######################################
 
 if get_option('build-tests') and host_machine.system() == 'linux'
+  DBG_FLAGS = ['-g3', '-Oz' ,'-fPIC']
   foreach f: TESTS
     test_name = 'test_' + f.full_path().split('/')[-1].split('.c')[0]
     test_exec = executable(test_name,
-      [f, FILES], c_args: ['-g3', '-Oz', '-fPIC'],
-      dependencies: [criterion],
+      [f, FILES], c_args: DBG_FLAGS,
+      dependencies: criterion,
       include_directories: INC,
-      install: false,
-      pie: true)
+      install: false)
     test(test_name, test_exec, args: ['--verbose'], verbose: false)
   endforeach
 endif
 
-test('simple test 1', dynamic_linked, args: ['test'], verbose: false)
-test('simple test 2', dynamic_linked, args: ['okay'], verbose: false)
-test('simple test 3', dynamic_linked, args: ['name'], should_fail: true, verbose: false)
-test('simple test 2', dynamic_linked, args: ['sam'], verbose: false)
+if host_machine.system() == 'linux'
+  test('simple test 1', dynamic_linked, args: ['test'], verbose: false)
+  test('simple test 2', dynamic_linked, args: ['okay'], verbose: false)
+  test('simple test 3', dynamic_linked, args: ['name'], should_fail: true, verbose: false)
+  test('simple test 2', dynamic_linked, args: ['sam'], verbose: false)
+endif
 
 test('simple test 1', static_linked, args: ['test'], verbose: false)
 test('simple test 2', static_linked, args: ['okay'], verbose: false)

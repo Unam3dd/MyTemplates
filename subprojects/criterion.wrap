@@ -2,7 +2,7 @@
 url = https://github.com/Snaipe/Criterion.git
 depth = 1
 revision = head
-method = cmake
+method = meson
 
 [provide]
 dependency_names = criterion

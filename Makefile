@@ -1,3 +1,8 @@
+CC = gcc
+#CC = clang
+#CC = clang-cl
+#CC = x86_64-w64-mingw32-gcc
+
 BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
@@ -32,10 +37,19 @@ debugoptimized:
 	@$(NINJA) install
 
 clean:
+ifeq ($(OS), Windows_NT)
+	@rmdir $(BUILD_DIR) /S /Q
+else
 	@rm -rf $(BUILD_DIR)
+endif
 
+ifeq ($(OS), Windows_NT)
+fclean:
+	@rmdir $(DIST_DIR) /S /Q
+else
 fclean: clean
 	@rm -rf $(DIST_DIR)
+endif
 
 re: fclean
 	@$(BUILD) --reconfigure
