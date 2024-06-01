@@ -1,0 +1,42 @@
+name: Ubuntu-Latest Release - GCC (Linux)
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ${{ github.repository }} on a branch ${{ github.ref_name }} triggered by ${{ github.event_name }}
+        uses: actions/checkout@v4
+
+      - run: "echo ${{ github.repository }} has been cloned in the container !"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 🔄 Installing Meson package build system...
+        run: pip install meson
+
+      - name: 🔄 Installing Ninja-build package...
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build -y
+
+      - name: Building the project...
+        env:
+          CC: ${{ matrix.compiler }}
+        run: |
+          echo "🏗️ Setting up Meson build system..."
+          make INSTALL=1 build-tests tests
+          echo "🎉 Build completed with Meson!"
+
