@@ -21,7 +21,6 @@ elif (host_machine.system() == 'windows' and cc.get_id() == 'clang-cl' or cc.get
   FLAGS = []
 endif
 
-
 ######################################
 #
 #             INCLUDES
@@ -102,9 +101,7 @@ summary({
 #
 ######################################
 
-if host_machine.system() == 'linux'
-  criterion = dependency('criterion', required: true)
-endif
+criterion = dependency('criterion', required: true)
 
 ######################################
 #
@@ -153,7 +150,7 @@ if get_option('build-tests') and host_machine.system() == 'linux'
     test_name = 'test_' + f.full_path().split('/')[-1].split('.c')[0]
     test_exec = executable(test_name,
       [f, FILES], c_args: DBG_FLAGS,
-      dependencies: criterion,
+      dependencies: criterion_dep,
       include_directories: INC,
       install: false)
     test(test_name, test_exec, args: ['--verbose'], verbose: false)

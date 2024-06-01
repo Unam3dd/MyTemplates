@@ -1,4 +1,4 @@
-CC = gcc
+#CC = gcc
 #CC = clang
 #CC = clang-cl
 #CC = x86_64-w64-mingw32-gcc
