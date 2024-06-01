@@ -19,11 +19,11 @@ jobs:
       - name: Checkout repository ${{ github.repository }}
         uses: actions/checkout@v4
 
-      - name: Starting Trivy scanner...
+      - name: Starting Trivy scanners on a containers...
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: 'fs'
-          scan-ref: '.'
+          scan-ref: './'
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
           exit-code: 1
