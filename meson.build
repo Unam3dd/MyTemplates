@@ -160,8 +160,8 @@ if get_option('build-tests') and host_machine.system() == 'linux'
 
   static_linked = executable('test_hello-world-static',
     SRCS,
-    c_args: FLAGS + '-static-pie',
-    link_args: FLAGS + '-static-pie',
+    c_args: FLAGS + '-static',
+    link_args: FLAGS + '-static',
     include_directories: INC,
     install: false,
     pie: true)
