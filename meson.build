@@ -166,7 +166,7 @@ if get_option('build-tests') and host_machine.system() == 'linux'
     install: false,
     pie: true)
   
-  DBG_FLAGS = ['-g3', '-Oz' ,'-fPIC']
+  DBG_FLAGS = ['-g3', '-Os' ,'-fPIC']
   foreach f: TESTS
     test_name = 'test_' + f.full_path().split('/')[-1].split('.c')[0]
     test_exec = executable(test_name,
