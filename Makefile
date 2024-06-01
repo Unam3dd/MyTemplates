@@ -7,13 +7,13 @@ BUILD_DIR = build
 DIST_DIR = bin
 MESON = meson
 TEST = $(MESON) test -C $(BUILD_DIR)
-BUILD = $(MESON) setup $(BUILD_DIR) --prefix=$(PWD)
+BUILD = $(MESON) setup $(BUILD_DIR)
 NINJA = ninja -C $(BUILD_DIR)
 
 all: $(DIST_DIR)
 
 $(DIST_DIR):
-	@$(BUILD)
+	@$(BUILD) --prefix=$(PWD)
 	@$(NINJA) install
 
 build: $(DIST_DIR)
@@ -21,19 +21,19 @@ build: $(DIST_DIR)
 release: $(DIST_DIR)
 
 plain:
-	@$(BUILD) --reconfigure --buildtype=plain
+	@$(BUILD) --reconfigure --buildtype=plain --prefix=$(PWD)
 	@$(NINJA) install
 
 minsize:
-	@$(BUILD) --reconfigure --buildtype=minsize
+	@$(BUILD) --reconfigure --buildtype=minsize --prefix=$(PWD)
 	@$(NINJA) install
 
 debug:
-	@$(BUILD) --reconfigure --buildtype=debug
+	@$(BUILD) --reconfigure --buildtype=debug --prefix=$(PWD)
 	@$(NINJA) install
 
 debugoptimized:
-	@$(BUILD) --reconfigure --buildtype=debugoptimized
+	@$(BUILD) --reconfigure --buildtype=debugoptimized --prefix=$(PWD)
 	@$(NINJA) install
 
 clean:
@@ -52,7 +52,7 @@ fclean: clean
 endif
 
 re: fclean
-	@$(BUILD) --reconfigure
+	@$(BUILD) --reconfigure --prefix=$(PWD)
 	@$(NINJA) install
 
 tests: $(BUILD_DIR)
@@ -62,7 +62,12 @@ vg-tests: $(BUILD_DIR)
 	@$(TEST) --verbose --wrapper=valgrind
 
 build-tests:
+ifeq ($(OS), Windows_NT)
 	@$(BUILD) --reconfigure -Dbuild-tests=true
-	@$(NINJA)
+	@$(NINJA) install
+else
+	@$(BUILD) --reconfigure -Dbuild-tests=true --prefix=/usr/
+	@$(NINJA) install
+endif
 
 .PHONY: all release plain minsize debug debugoptimized clean fclean re tests build build-tests vg-tests
