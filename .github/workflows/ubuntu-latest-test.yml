@@ -30,13 +30,13 @@ jobs:
       - name: 🔄 Installing Ninja-build package...
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build -y
+          sudo apt-get install ninja-build libcriterion -y
 
       - name: Building the project...
         env:
           CC: ${{ matrix.compiler }}
         run: |
           echo "🏗️ Setting up Meson build system..."
-          make INSTALL=1 build-tests tests
+          make build-tests tests
           echo "🎉 Build completed with Meson!"
 
