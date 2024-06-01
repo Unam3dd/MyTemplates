@@ -13,7 +13,9 @@ linker = cc.get_linker_id()
 
 if (host_machine.system() == 'linux')
   ld = find_program('ld', required: false)
-elif (cc.get_id() == 'gcc')
+endif
+
+if (cc.get_id() == 'linux' or cc.get_id() == 'gcc')
   FLAGS = ['-fstack-protector-all', '-D_FORTIFY_SOURCE=2']
 elif (host_machine.system() == 'windows' and cc.get_id() == 'clang-cl' or cc.get_id() == 'cl')
   FLAGS = []
@@ -124,7 +126,7 @@ dynamic_linked = executable('hello-world',
 static_linked = executable('hello-world-static',
         SRCS,
         c_args: FLAGS + '-static-pie',
-        link_args: FLAGS,
+        link_args: FLAGS + '-static-pie',
         include_directories: INC,
         install_dir: DIST + '/static/',
         install: true,
